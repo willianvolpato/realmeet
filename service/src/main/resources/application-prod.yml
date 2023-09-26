@@ -1,0 +1,4 @@
+spring:
+  datasource:
+    url: jdbc:mysql://realmeet-db.c6wfvhw8himq.us-east-1.rds.amazonaws.com:3306/realmeet??createDatabaseIfNotExist=true&serverTimezone=UTC&useSSL=false
+    username: admin

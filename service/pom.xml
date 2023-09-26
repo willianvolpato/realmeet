@@ -19,6 +19,7 @@
         <springdoc-openapi-ui.version>1.6.9</springdoc-openapi-ui.version>
         <mockito-junit-jupiter.version>3.7.7</mockito-junit-jupiter.version>
         <prettier-maven-plugin.version>0.20</prettier-maven-plugin.version>
+        <flyway.version>9.21.0</flyway.version>
     </properties>
 
     <dependencies>
