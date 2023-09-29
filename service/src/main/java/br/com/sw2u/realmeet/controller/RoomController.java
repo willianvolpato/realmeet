@@ -34,4 +34,11 @@ public class RoomController implements RoomsApi {
             .supplyAsync(() -> roomService.createRoom(createRoomDTO), controllerExecutor)
             .thenApply(ResponseEntityUtils::created);
     }
+
+    @Override
+    public CompletableFuture<ResponseEntity<Void>> deleteRoom(Long id) {
+        return CompletableFuture
+            .runAsync(() -> roomService.deleteRoom(id), controllerExecutor)
+            .thenApply(ResponseEntityUtils::noContent);
+    }
 }

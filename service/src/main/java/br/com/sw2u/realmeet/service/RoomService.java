@@ -10,6 +10,7 @@ import br.com.sw2u.realmeet.exception.RoomNotFoundException;
 import br.com.sw2u.realmeet.mapper.RoomMapper;
 import br.com.sw2u.realmeet.validation.RoomValidator;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class RoomService {
@@ -24,10 +25,7 @@ public class RoomService {
     }
 
     public RoomDTO getRoom(Long id) {
-        requireNonNull(id);
-        Room room = roomRepository
-            .findByIdAndActive(id, true)
-            .orElseThrow(() -> new RoomNotFoundException("Room " + id + " not found"));
+        Room room = getRoomByIdOrThrow(id);
 
         return roomMapper.fromEntityToDto(room);
     }
@@ -39,5 +37,18 @@ public class RoomService {
         roomRepository.save(room);
 
         return roomMapper.fromEntityToDto(room);
+    }
+
+    @Transactional
+    public void deleteRoom(Long id) {
+        Room room = getRoomByIdOrThrow(id);
+        roomRepository.disable(id);
+    }
+
+    public Room getRoomByIdOrThrow(Long id) {
+        requireNonNull(id);
+        return roomRepository
+            .findByIdAndActive(id, true)
+            .orElseThrow(() -> new RoomNotFoundException("Room " + id + " not found"));
     }
 }

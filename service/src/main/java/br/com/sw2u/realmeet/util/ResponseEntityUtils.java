@@ -18,4 +18,8 @@ public final class ResponseEntityUtils {
     public static <T> ResponseEntity<T> created(T body) {
         return ResponseEntity.status(HttpStatus.CREATED).body(body);
     }
+
+    public static <T> ResponseEntity<T> noContent(Void aVoid) {
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

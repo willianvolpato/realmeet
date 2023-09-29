@@ -3,7 +3,6 @@ package br.com.sw2u.realmeet.validation;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import org.springframework.data.util.Streamable;
 
 public class ValidationErrors implements Streamable<ValidationError> {
