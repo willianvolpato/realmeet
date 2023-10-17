@@ -46,6 +46,31 @@ paths:
           description: 'Delete Successful'
         404:
           description: Not found
+    put:
+      summary: 'Update a room by id'
+      operationId: updateRoom
+      tags:
+        - room
+      parameters:
+        - name: id
+          in: path
+          description: ID of the room
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRoomDTO'
+      responses:
+        '204':
+          description: 'Update Successful'
+        404:
+          description: Not found
+        422:
+          $ref: '#/components/responses/UnprocessableEntity'
   /rooms:
     post:
       summary: 'Create a room'
@@ -76,6 +101,10 @@ components:
           type: string
         seats:
           type: integer
+    UpdateRoomDTO:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/CreateRoomDTO'
     RoomDTO:
       type: object
       allOf:

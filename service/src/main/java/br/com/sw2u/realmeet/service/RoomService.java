@@ -1,16 +1,18 @@
 package br.com.sw2u.realmeet.service;
 
-import static java.util.Objects.requireNonNull;
-
 import br.com.sw2u.realmeet.api.model.CreateRoomDTO;
 import br.com.sw2u.realmeet.api.model.RoomDTO;
+import br.com.sw2u.realmeet.api.model.UpdateRoomDTO;
 import br.com.sw2u.realmeet.domain.entity.Room;
 import br.com.sw2u.realmeet.domain.repository.RoomRepository;
 import br.com.sw2u.realmeet.exception.RoomNotFoundException;
 import br.com.sw2u.realmeet.mapper.RoomMapper;
 import br.com.sw2u.realmeet.validation.RoomValidator;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static java.util.Objects.requireNonNull;
 
 @Service
 public class RoomService {
@@ -41,11 +43,18 @@ public class RoomService {
 
     @Transactional
     public void deleteRoom(Long id) {
-        Room room = getRoomByIdOrThrow(id);
+        getRoomByIdOrThrow(id);
         roomRepository.disable(id);
     }
 
-    public Room getRoomByIdOrThrow(Long id) {
+    @Transactional
+    public void updateRoom(Long id, UpdateRoomDTO updateRoomDTO) {
+        getRoomByIdOrThrow(id);
+        roomValidator.validate(id, updateRoomDTO);
+        roomRepository.updateRoom(id, updateRoomDTO.getName(), updateRoomDTO.getSeats());
+    }
+
+    private Room getRoomByIdOrThrow(Long id) {
         requireNonNull(id);
         return roomRepository
             .findByIdAndActive(id, true)

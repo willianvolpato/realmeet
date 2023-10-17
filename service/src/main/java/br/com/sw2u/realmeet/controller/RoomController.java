@@ -3,10 +3,13 @@ package br.com.sw2u.realmeet.controller;
 import br.com.sw2u.realmeet.api.facade.RoomsApi;
 import br.com.sw2u.realmeet.api.model.CreateRoomDTO;
 import br.com.sw2u.realmeet.api.model.RoomDTO;
+import br.com.sw2u.realmeet.api.model.UpdateRoomDTO;
 import br.com.sw2u.realmeet.service.RoomService;
 import br.com.sw2u.realmeet.util.ResponseEntityUtils;
+
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,5 +43,12 @@ public class RoomController implements RoomsApi {
         return CompletableFuture
             .runAsync(() -> roomService.deleteRoom(id), controllerExecutor)
             .thenApply(ResponseEntityUtils::noContent);
+    }
+
+    @Override
+    public CompletableFuture<ResponseEntity<Void>> updateRoom(Long id, UpdateRoomDTO updateRoomDTO) {
+        return CompletableFuture
+                .runAsync(() -> roomService.updateRoom(id, updateRoomDTO), controllerExecutor)
+                .thenApply(ResponseEntityUtils::noContent);
     }
 }

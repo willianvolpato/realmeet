@@ -1,13 +1,17 @@
 package br.com.sw2u.realmeet.validation;
 
+import br.com.sw2u.realmeet.api.model.CreateRoomDTO;
+import br.com.sw2u.realmeet.api.model.UpdateRoomDTO;
+import br.com.sw2u.realmeet.domain.repository.RoomRepository;
+
+import java.util.Objects;
+
+import org.springframework.stereotype.Component;
+
 import static br.com.sw2u.realmeet.validation.ValidationUtils.thrownOnError;
 import static br.com.sw2u.realmeet.validation.ValidationUtils.validateMaxLength;
 import static br.com.sw2u.realmeet.validation.ValidationUtils.validateRequired;
 import static br.com.sw2u.realmeet.validation.ValidationUtils.validateValue;
-
-import br.com.sw2u.realmeet.api.model.CreateRoomDTO;
-import br.com.sw2u.realmeet.domain.repository.RoomRepository;
-import org.springframework.stereotype.Component;
 
 @Component
 public class RoomValidator {
@@ -21,7 +25,19 @@ public class RoomValidator {
         ValidationErrors validationErrors = new ValidationErrors();
 
         if (validateRoomName(dto.getName(), validationErrors) && validateRoomSeats(dto.getSeats(), validationErrors)) {
-            validateDuplicatedRoom(dto.getName(), validationErrors);
+            validateDuplicatedRoom(null, dto.getName(), validationErrors);
+        }
+
+        thrownOnError(validationErrors);
+    }
+
+    public void validate(Long id, UpdateRoomDTO dto) {
+        ValidationErrors validationErrors = new ValidationErrors();
+
+        if (validateRequired("id", id, validationErrors) &&
+                validateRoomName(dto.getName(), validationErrors) &&
+                validateRoomSeats(dto.getSeats(), validationErrors)) {
+            validateDuplicatedRoom(id, dto.getName(), validationErrors);
         }
 
         thrownOnError(validationErrors);
@@ -41,9 +57,12 @@ public class RoomValidator {
         );
     }
 
-    private void validateDuplicatedRoom(String name, ValidationErrors validationErrors) {
+    private void validateDuplicatedRoom(Long roomId, String name, ValidationErrors validationErrors) {
         roomRepository
             .findByNameAndActive(name, true)
-            .ifPresent(room -> validationErrors.add("name", "Already exists a room with name " + room.getName()));
+            .ifPresent(room -> {
+                if(Objects.isNull(roomId) || !Objects.equals(room.getId(), roomId))
+                    validationErrors.add("name", "Already exists a room with name " + room.getName());
+            });
     }
 }
